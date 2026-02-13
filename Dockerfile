@@ -1,10 +1,9 @@
-# Используем стандартный образ OpenJDK
-FROM openjdk:21-jdk-slim as build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 COPY . .
-RUN chmod +x mvnw
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
-FROM openjdk:17-jdk-slim
+# Этап запуска
+FROM eclipse-temurin:21-jre
 COPY --from=build /target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
